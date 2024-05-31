@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 
 ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
 {
-    //builder.AddConsole();
     builder.AddProvider(new SimpleConsoleLoggerProvider());
 });
 ILogger logger = loggerFactory.CreateLogger<Program>();
@@ -31,10 +30,10 @@ if (settings == null)
 }
 
 logger.LogInformation("========== Azure Key Vault Settings ==========");
-logger.LogInformation($"TenantId: {settings.TenantId}");
-logger.LogInformation($"AppId: {settings.AppId}");
-logger.LogInformation($"AppSecret: {settings.AppSecret}");
-logger.LogInformation($"KeyVault: {settings.KeyVault}");
+logger.LogInformation("TenantId: {TenantId}", settings.TenantId);
+logger.LogInformation("AppId: {AppId}", settings.AppId);
+logger.LogInformation("AppSecret: {AppSecret}", settings.AppSecret);
+logger.LogInformation("KeyVault: {KeyVault}", settings.KeyVault);
 logger.LogInformation("");
 
 // Initialize SecretClient
@@ -53,15 +52,19 @@ logger.LogInformation("========== Secrets ==========");
 
 if (secretsSection.Exists() && secretsSection.GetChildren().Any())
 {
-    foreach (KeyValuePair<string, string> secret in secretsSection.AsEnumerable().Skip(1))
+    var secretKeys = secretsSection.AsEnumerable().Skip(1).Select(x => x.Value);
+
+    foreach (string? secretKey in secretKeys)
     {
-        logger.LogInformation("");
-        string? secretValue = keyVaultSecrets.GetValue<string>(secret.Value);
+        if (secretKey is null) continue;
+
+        string? secretValue = keyVaultSecrets.GetValue<string>(secretKey);
 
         if (secretValue is null) continue;
 
-        logger.LogInformation(secret.Value);
-        logger.LogInformation(secretValue);
+        logger.LogInformation("");
+        logger.LogInformation("{SecretKey}", secretKey);
+        logger.LogInformation("{SecretValue}", secretValue);
     }
 }
 else
@@ -69,8 +72,8 @@ else
     foreach (var item in keyVaultSecrets.AsEnumerable())
     {
         logger.LogInformation("");
-        logger.LogInformation(item.Key);
-        logger.LogInformation(item.Value);
+        logger.LogInformation("{SecretKey}", item.Key);
+        logger.LogInformation("{SecretValue}", item.Value);
     };
 }
 
