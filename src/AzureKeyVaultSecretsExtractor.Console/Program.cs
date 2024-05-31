@@ -22,12 +22,8 @@ IConfigurationRoot configuration = new ConfigurationBuilder()
 
 AzureKeyVaultSettings? settings = configuration
     .GetRequiredSection("AzureKeyVaultSettings")
-    .Get<AzureKeyVaultSettings>();
-
-if (settings == null)
-{
-    throw new InvalidOperationException("Azure Key Vault settings are not configured properly.");
-}
+    .Get<AzureKeyVaultSettings>()
+        ?? throw new InvalidOperationException("Azure Key Vault settings are not configured properly.");
 
 logger.LogInformation("========== Azure Key Vault Settings ==========");
 logger.LogInformation("TenantId: {TenantId}", settings.TenantId);
@@ -48,34 +44,39 @@ IConfigurationRoot keyVaultSecrets = new ConfigurationBuilder()
 
 IConfigurationSection secretsSection = configuration.GetSection("Secrets");
 
-logger.LogInformation("========== Secrets ==========");
-
-if (secretsSection.Exists() && secretsSection.GetChildren().Any())
-{
-    var secretKeys = secretsSection.AsEnumerable().Skip(1).Select(x => x.Value);
-
-    foreach (string? secretKey in secretKeys)
-    {
-        if (secretKey is null) continue;
-
-        string? secretValue = keyVaultSecrets.GetValue<string>(secretKey);
-
-        if (secretValue is null) continue;
-
-        logger.LogInformation("");
-        logger.LogInformation("{SecretKey}", secretKey);
-        logger.LogInformation("{SecretValue}", secretValue);
-    }
-}
-else
-{
-    foreach (var item in keyVaultSecrets.AsEnumerable())
-    {
-        logger.LogInformation("");
-        logger.LogInformation("{SecretKey}", item.Key);
-        logger.LogInformation("{SecretValue}", item.Value);
-    };
-}
+LogKeyVaultSecrets(logger, keyVaultSecrets, secretsSection);
 
 logger.LogInformation("");
 logger.LogInformation("========== Application End ==========");
+
+static void LogKeyVaultSecrets(ILogger logger, IConfigurationRoot keyVaultSecrets, IConfigurationSection secretsSection)
+{
+    logger.LogInformation("========== Secrets ==========");
+
+    if (secretsSection.Exists() && secretsSection.GetChildren().Any())
+    {
+        var secretKeys = secretsSection.AsEnumerable().Skip(1).Select(x => x.Value);
+
+        foreach (string? secretKey in secretKeys)
+        {
+            if (secretKey is null) continue;
+
+            string? secretValue = keyVaultSecrets.GetValue<string>(secretKey);
+
+            if (secretValue is null) continue;
+
+            logger.LogInformation("");
+            logger.LogInformation("{SecretKey}", secretKey);
+            logger.LogInformation("{SecretValue}", secretValue);
+        }
+    }
+    else
+    {
+        foreach (var item in keyVaultSecrets.AsEnumerable())
+        {
+            logger.LogInformation("");
+            logger.LogInformation("{SecretKey}", item.Key);
+            logger.LogInformation("{SecretValue}", item.Value);
+        }
+    }
+}
