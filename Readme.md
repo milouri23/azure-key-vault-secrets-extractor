@@ -1,24 +1,25 @@
 # Introduction
 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project.
+Welcome to the Azure Key Vault Secrets Extractor project! This project aims to provide a convenient way to extract secrets from Azure Key Vault.
 
 # Getting Started
 
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
+To get started with the project, follow these steps:
 
-1. Installation process
-2. Software dependencies
-3. Latest releases
-4. API references
+1. Install the necessary dependencies.
+2. Set up your Azure Key Vault and obtain the required credentials.
+3. Configure the project with the necessary settings.
+4. Run the code to extract secrets from Azure Key Vault.
 
 # Build and Test
 
-TODO: Describe and show how to build your code and run the tests.
+To build the code, simply run the build command. To run the tests, execute the test command.
 
 # Contribute
 
-TODO: Explain how other users and developers can contribute to make your code better.
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
+We welcome contributions from the community to make this project even better. If you're interested in contributing, please refer to our [contribution guidelines](https://github.com/your-project/contributing.md) for more information.
+
+If you need inspiration for creating a good readme file, you can check out the readme files of popular projects like [ASP.NET Core](https://github.com/aspnet/Home), [Visual Studio Code](https://github.com/Microsoft/vscode), and [Chakra Core](https://github.com/Microsoft/ChakraCore).
 
 - [ASP.NET Core](https://github.com/aspnet/Home)
 - [Visual Studio Code](https://github.com/Microsoft/vscode)
